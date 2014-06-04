@@ -1,94 +1,33 @@
 <!DOCTYPE html>
-<html data-ng-app="GPSApp">
+<html data-ng-app="uiDataGridApp">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<title>Responsive GPS Project</title>
+<title>uiDataGrid - Angular Project</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta content="" name="description">
 <meta content="" name="author">
-<link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="angular-datagrid/css/datagrid.css">
-<link rel="stylesheet" href="app/css/app.css">
 </head>
 <body>
-<header class="navbar navbar-default navbar-fixed-top" role="navigation">
-	<div class="container-fluid">
-		<ul class="nav navbar-nav">
-			<a href="#top" role="button" class="navbar-brand"></a>
-			<li class="dropdown">
-				<a role="button" class="dropdown-toggle">Domínios <b class="fa fa-caret-down"></b></a>
-				<ul class="dropdown-menu">
-					<li role="presentation">
-						<a href="#" role="menuitem" tabindex="-1">Gerenciamento dos Domínios</a>
-					</li>
-				</ul>
-			</li>
-			<li class="dropdown">
-				<a role="button" class="dropdown-toggle">ScoreCard <b class="fa fa-caret-down"></b></a>
-				<ul class="dropdown-menu">
-					<li role="presentation"><a role="menuitem" href="#scorecaradmin">Gerenciamento de Scorecards</a></li>
-					<li role="presentation" class="divider"></li>
-					<li role="presentation"><a role="menuitem" href="#scorecardavaliado">ScoreCard Individual</a></li>
-					<li role="presentation"><a role="menuitem" href="#scorecardgrupoperfil">ScoreCard por Grupo</a></li>
-				</ul>
-			</li>
-			<li class="dropdown">
-				<a role="button" class="dropdown-toggle">Configurações<b class="fa fa-caret-down"></b></a>
-				<ul class="dropdown-menu">
-					<li role="presentation"><a role="menuitem" href="#">Ajuste de Risco</a></li>
-					<li role="presentation"><a role="menuitem" href="#">Cálculo da Remuneração</a></li>
-					<li role="presentation"><a role="menuitem" href="#">Controle de fechamento de Referência</a></li>
-					<li role="presentation"><a role="menuitem" href="#">Lista de Perfis </a></li>
-					<li role="presentation"><a role="menuitem" href="#">Regra de remuneração por desempenho</a></li>
-					<li role="presentation" class="divider"></li>
-					<li role="presentation"><a role="menuitem" href="#">Agrupamento de Procedimentos Internação</a></li>
-					<li role="presentation"><a role="menuitem" href="#">Relacionar Especialidades com CFM</a></li>
-					<li role="presentation" class="divider"></li>
-					<li role="presentation"><a role="menuitem" href="#">Validador</a></li>
-				</ul>
-			</li>
-			<li class="dropdown">
-				<a role="button" class="dropdown-toggle">Indicadores<b class="fa fa-caret-down"></b></a>
-				<ul class="dropdown-menu">
-					<li role="presentation"><a role="menuitem" href="#">Cadastro de Indicadores Customizados</a></li>
-					<li role="presentation"><a role="menuitem" href="#">Listar Indicadores Customizados </a></li>
-					<li role="presentation" class="divider"></li>
-					<li role="presentation"><a role="menuitem" href="#">Calcular Indicadores</a></li>
-					<li role="presentation"><a role="menuitem" href="#">Indicadores ativos (produção)</a></li>
-				</ul>
-			</li>
-			<li class="dropdown">
-				<a role="button" class="dropdown-toggle">Usuários<b class="fa fa-caret-down"></b></a>
-				<ul class="dropdown-menu">
-					<li role="presentation"><a role="menuitem" href="#">Gerenciar Senhas</a></li>
-					<li role="presentation"><a role="menuitem" href="#">Listar Acessos</a></li>
-				</ul>
-			</li>
-			<li class="dropdown">
-				<a role="button" class="dropdown-toggle">Cache<b class="fa fa-caret-down"></b></a>
-				<ul class="dropdown-menu">
-					<li role="presentation"><a role="menuitem" href="#">Sistema</a></li>
-					<li role="presentation"><a role="menuitem" href="#">Dashboard</a></li>
-				</ul>
-			</li>
-		</ul>
+<br>
+<div class="container">
+	<div class="row">
+		<div data-ng-controller="dataGridController">
+			<p>
+				<button class="btn btn-default" ng-click="load($event)">load</button>
+				<button class="btn btn-default" ng-click="changeTitle($event)">Change Title</button>
+			</p>
+			<uidatagrid columns="mapper" rows="rows" autoload="autoload" title="title" ></uidatagrid>
+		</div>
 	</div>
-</header>
-<div data-ng-controller="dataGridController">
-	<p>
-		<button class="btn btn-default" ng-click="load($event)">load</button>
-		<button class="btn btn-default" ng-click="changeTitle($event)">Change Title</button>
-	</p>
-	<uidatagrid columns="mapper" rows="rows" autoload="autoload" title="title" ></uidatagrid>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js"></script>
-<script src="angular-ui/ui-bootstrap-0.11.0.min.js"></script>
 <script src="angular-datagrid/datagrid.js"></script>
 <script>
 // https://github.com/angular-ui/bootstrap/tree/master/src
-angular.module('GPSApp', ['ui.bootstrap','uiDataGrid']).controller('dataGridController',function($scope){
+angular.module('uiDataGridApp', ['uiDataGrid']).controller('dataGridController',function($scope){
 
 	$scope.changeTitle = function() {
 		$scope.title = 'New Title '+(new Date()).getTime();
