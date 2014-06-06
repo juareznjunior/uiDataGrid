@@ -19,49 +19,31 @@
 				<button class="btn btn-default" ng-click="load($event)">load</button>
 				<button class="btn btn-default" ng-click="changeTitle($event)">Change Title</button>
 			</p>
-			<uidatagrid columns="mapper" rows="rows" autoload="autoload" title="title" ></uidatagrid>
+			<div data-ui-datagrid
+				data-columns="mapper"
+				data-rows="rows"
+				data-auto-load="autoload"
+				data-title="title"
+				data-click-row="callback(row)"
+				data-row-number="true">
+			</div>
+			<div class="panel panel-info">
+				<div class="panel-heading">
+			  		<h3 class="panel-title">Master Detail</h3>
+				</div>
+				<div class="panel-body">
+					<ul class="list-group">
+					  <li class="list-group-item list-group-item-success"><span class="label label-success">ID</span> {{ rowDetail.id }}</li>
+					  <li class="list-group-item list-group-item-info"><span class="label label-info">NOME</span> {{ rowDetail.nome }}</li>
+					  <li class="list-group-item list-group-item-warning"><span class="label label-warning">EMPRESA</span> {{ rowDetail.empresa }}</li>
+					</ul>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js"></script>
 <script src="angular-datagrid/datagrid.js"></script>
-<script>
-// https://github.com/angular-ui/bootstrap/tree/master/src
-angular.module('uiDataGridApp', ['uiDataGrid']).controller('dataGridController',function($scope){
-
-	$scope.changeTitle = function() {
-		$scope.title = 'New Title '+(new Date()).getTime();
-	}
-	
-	$scope.load = function(ev) {
-		$scope.autoload = true;
-		angular.element(ev.currentTarget).remove();
-	}
-	
-	$scope.title = 'Scope Title';
-	$scope.autoload = false;
-
-	$scope.mapper = [{
-		name:'id',title:'Id',width:80,align:'center'
-	},{
-		name:'nome',title:'Nome',width:120
-	},{
-		name:'empresa',title:'Empresa'
-	}];
-	
-	$scope.rows = [
-		 {"id":"1","nome":"Fulano de Tal","empresa":"Empresa 1"}
-		,{"id":"2","nome":"Beltrano da Silva","empresa":"Empresa 2"}
-		,{"id":"3","nome":"Beltrano da Silva","empresa":"Empresa do tal"}
-		,{"id":"4","nome":"Beltrano da Silva","empresa":"Empresa 123122"}
-		,{"id":"5","nome":"Beltrano da Silva","empresa":"Empresa 2"}
-		,{"id":"6","nome":"Beltrano da Silva","empresa":"Empresa 3312"}
-		,{"id":"7","nome":"Beltrano da Silva","empresa":"Empresa 312"}
-		,{"id":"8","nome":"Beltrano da Silva","empresa":"Empresa 3123122"}
-		,{"id":"9","nome":"Fulano de Tal","empresa":"Empresa 221"}
-		,{"id":"10","nome":"Beltrano da Silva","empresa":"Empresa 2"}
-	];	
-});
-</script>
+<script src="app.js"></script>
 </body>
 </html>
