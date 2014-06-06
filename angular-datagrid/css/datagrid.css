@@ -22,8 +22,8 @@
 .ui-datagrid-tools td {padding: 3px 1px}
 .ui-datagrid-tools td:last-child {text-align:right}
 .ui-datagrid-tools td:last-child .ui-button-icon-only .ui-button-text ,.ui-datagrid-tools td:last-child .ui-button-icons-only .ui-button-text { padding:1px; }
-.ui-datagrid-cell-rownumber { width:20px;text-align: center }
-.ui-datagrid-cell-rownumber div {text-align:center;width:20px;overflow:hidden;white-space: nowrap;}
+.ui-datagrid-cell-rownumber { width:20px }
+.ui-datagrid-cell-rownumber div {width:20px;overflow:hidden;white-space: nowrap;}
 .ui-datagrid-gridlayout .ui-datagrid-cell-rownumber {background-image: none}
 .ui-datagrid-header th.ui-datagrid-align-center, .ui-datagrid-body td.ui-datagrid-align-center {text-align:center}
 .ui-datagrid-header th.ui-datagrid-align-left, .ui-datagrid-body td.ui-datagrid-align-left {text-align:left}
