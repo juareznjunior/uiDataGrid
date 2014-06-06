@@ -1,7 +1,9 @@
 ;(function(ng){
 
+	'use strict';
+
 	var  ngElem = function(elem) { return ng.element(elem); }
-		,fireWatch = function() {}
+		,noop = function() {}
 		,watchers = function() {
 			var self = this;
 			
@@ -11,17 +13,17 @@
 				}
 			});
 			
-			if ( false === this.$scope.autoload ) {
-				this.$scope.$watch('autoload',function(n){
+			if ( false === this.$scope.autoLoad ) {
+				this.$scope.$watch('autoLoad',function(n){
 					if ( true === n ) {
 						self.createRows();
-						fireWatch();
+						noop();
 					}
 				});
 			}
 		}
 
-	var uiDataGrid = function($scope,$element,$attrs) {
+	var uiDataGrid = function($scope,$element,$attrs,$parse) {
 	
 		this.$scope   = $scope;
 		this.$element = $element;
@@ -29,10 +31,11 @@
 		
 		// helpers
 		var uiDataGridTables = [].slice.call($element[0].getElementsByTagName('table'))
-			,contentScroll   = uiDataGridTables.shift().parentNode.parentNode
+			,contentScroll = uiDataGridTables.shift().parentNode.parentNode
 			,tableHeaderChilds = ngElem(uiDataGridTables[0]).children()
 			,tableGridLayout = ngElem(uiDataGridTables[1]).children()
-			,tableBodyChilds = ngElem(uiDataGridTables[2]).children();
+			,tableBodyChilds = ngElem(uiDataGridTables[2]).children()
+			,scrollHeight = [($scope.height || '200'),'px'].join('');
 			
 		// grid layout
 		this.uiDataGridColGroupLayout = ngElem(tableGridLayout[0]);
@@ -46,6 +49,9 @@
 		this.uiDataGridColGroupBody = ngElem(tableBodyChilds[0]);
 		this.uiDataGridTheadBody = ngElem(tableBodyChilds[1]);
 		this.uiDataGridTbody = ngElem(tableBodyChilds[2]);
+
+		// scroll height
+		ngElem(uiDataGridTables[2].parentNode).css({'height':scrollHeight});
 		
 		// clean helpers
 		uiDataGridTables = tableHeaderChilds = tableBodyChilds = null;
@@ -54,6 +60,13 @@
 		
 		this.createColumns();
 
+		// tbody event closest tr
+		// click-row
+		if ( ng.isFunction($scope.clickRow) ) {
+			this.uiDataGridTbody.on('click',function(e){
+				$scope.clickRow({'row':e.target.parentNode});
+			});
+		}
 	}
 	uiDataGrid.prototype = {
 		createColumns: function() {
@@ -66,6 +79,7 @@
 				,auxCol
 				,obj
 				,title
+				,len = this.$scope.columns.length
 				,i  = 0
 				,sw = 0
 				,al = 'ui-datagrid-align-'
@@ -76,23 +90,60 @@
 				,tr1 = ngElem(this.uiDataGridTbodyLayout[0].rows[0]).empty()
 				,tr2 = ngElem(this.uiDataGridTheadHeader[0].rows[0]).empty()
 				,tr3 = ngElem(this.uiDataGridTheadBody[0].rows[0]).empty();
+
+			/**
+			 * Aux Function
+			 *
+			 * @contect uiDataGrid
+			 * @param  Object tdTpl
+			 * @param  Object auxCol
+			 * @return void
+			 */
+			var appendElements = function(auxTh,auxCol) {
+
+				// cols
+				this.uiDataGridColGroupLayout.append(auxCol);
+				this.uiDataGridColGroupHeader.append(auxCol.clone());
+				this.uiDataGridColGroupBody.append(auxCol.clone());
+
+				// header
+				tr2.append(auxTh);
+
+				// body
+				tr3.append(auxTh.clone());
+			}
+
+			// enable row number
+			if ( this.$scope.rowNumber ) {
+
+				auxTh  = ngElem(thTpl).addClass('ui-state-default ui-datagrid-cell-rownumber');
+				auxCol = ngElem(colTpl);
+
+				appendElements.call(this,auxTh,auxCol);
+
+				// grid layout
+				tr1.append(ngElem('<td class="ui-widget ui-widget-content ui-datagrid-cell-rownumber"></td>'));
+
+				sw = 20;
+			}
 			
 			for (; obj = this.$scope.columns[i]; i += 1) {
 			
 				auxTh = ngElem(thTpl).text(obj.title || obj.name).addClass(al+(( /left|right|center/.test(obj.align) ) ? obj.align : 'left'));
-				auxCol = ngElem(colTpl).css({"width":obj.width+'px'});
+				auxCol = ngElem(colTpl);
+				if ( (i+1) < len ) {
+					auxCol.css({"width":obj.width+'px'});
+				}
 				
-				this.uiDataGridColGroupLayout.append(auxCol);
-				this.uiDataGridColGroupHeader.append(auxCol.clone());
-				this.uiDataGridColGroupBody.append(auxCol.clone());
-				
+				appendElements.call(this,auxTh,auxCol);
+
+				// grid layout
 				tr1.append(ngElem(tdTpl));
-				tr2.append(auxTh);
-				tr3.append(auxTh.clone());
 				
 				sw += obj.width || 0;
 			}
 			
+			appendElements = null;
 			tr1 = tr2 = tr3 = null;
 			auxTh = auxCol = null;
 			
@@ -117,6 +168,13 @@
 			
 			for (; data = this.$scope.rows[i]; i += 1) {
 				row = oTbody.insertRow(-1);
+				ngElem(row).data('mapper-json',data);
+				
+				// row number
+				if ( this.$scope.rowNumber ) {
+					ngElem(row.insertCell(-1)).addClass('ui-state-default ui-datagrid-cell-rownumber ui-datagrid-align-center').text((i+1));
+				}
+
 				j = 0;
 				for (; json = this.$scope.columns[j]; j += 1) {
 					cell = row.insertCell(-1);
@@ -131,20 +189,23 @@
 	}
 
 	ng.module('uiDataGrid', [])
-		.directive('uidatagrid', function factory() {
+		.directive('uiDatagrid', function factory($parse) {
 			return {
 				 restrict: 'EA'
 				,templateUrl:'angular-datagrid/template/datagrid.html'
 				,replace:true
 				,scope: {
-					 columns:"="
-					,rows:"="
-					,autoload:"="
-					,title:"="
+					 columns   : '='
+					,rows      : '='
+					,autoLoad  : '=autoLoad'
+					,title     : '='
+					,clickRow  : '&clickRow'
+					,height    : '='
+					,rowNumber : '=rowNumber'
 				}
-				,compile: function($element,$attr) {
+				,compile: function($element,$attrs) {
 					return function($scope,$element,$attrs) {
-						$scope.uiDataGrid = new uiDataGrid($scope,$element);
+						new uiDataGrid($scope,$element,$attrs,$parse);
 					}
 				}
 			};
