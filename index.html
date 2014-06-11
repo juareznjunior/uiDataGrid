@@ -13,20 +13,19 @@
 <body>
 <br>
 <div class="container">
-	<div class="row">
-		<div data-ng-controller="dataGridController">
-			<p>
-				<button class="btn btn-default" ng-click="load($event)">load</button>
-				<button class="btn btn-default" ng-click="changeTitle($event)">Change Title</button>
-			</p>
-			<div data-ui-datagrid
-				data-columns="mapper"
-				data-rows="rows"
-				data-auto-load="autoload"
-				data-title="title"
-				data-click-row="callback(row)"
-				data-row-number="true">
+	<div class="row" data-ng-controller="dataGridController1">
+		<div class="col-md-6">
+			<div class="panel panel-info">
+				<div class="panel-heading">
+			  		<h3 class="panel-title">Grid Panel</h3>
+				</div>
+				<div class="panel-body">
+					<p><button class="btn btn-default" ng-click="changeTitle()">Change Title</button></p>
+					<div data-ui-datagrid title="DataGrid"></div>
+				</div>
 			</div>
+		</div>
+		<div class="col-md-6">
 			<div class="panel panel-info">
 				<div class="panel-heading">
 			  		<h3 class="panel-title">Master Detail</h3>
